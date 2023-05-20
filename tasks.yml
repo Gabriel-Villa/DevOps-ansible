@@ -13,7 +13,7 @@
       msg: Hello Ansible
 
 
-  - name: Update apt cache and make sure Vim is installed
+  - name: Update apt cache and make sure vim,curl,unzip,nginx is installed
     become: true
     apt:
       name: "{{ item }}"
