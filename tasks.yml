@@ -1,0 +1,30 @@
+
+# - hosts: all
+- hosts: azure
+  gather_facts: true
+  
+  tasks:
+
+  - name: Ping to the server
+    action: ping
+  
+  - name: Print message
+    debug:
+      msg: Hello Ansible
+
+
+  - name: Update apt cache and make sure Vim is installed
+    become: true
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+    loop:
+      - vim
+      - curl
+      - unzip
+      - nginx
+
+  - name: Only on Ubuntu || Centos
+    debug: 
+      msg: Message only on Ubuntu or Centos
+    when: ansible_distribution == "Ubuntu" or ansible_distribution == "CentOS"

@@ -1,0 +1,5 @@
+[azure]
+20.219.25.237
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
