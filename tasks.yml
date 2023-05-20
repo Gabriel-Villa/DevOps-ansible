@@ -2,7 +2,7 @@
 # - hosts: all
 - hosts: azure
   gather_facts: true
-  
+  become: true
   tasks:
 
   - name: Ping to the server
@@ -12,19 +12,40 @@
     debug:
       msg: Hello Ansible
 
+  - name: Update apt cache
+    apt:
+       update_cache: yes
+    when: ansible_distribution == "Ubuntu"
 
-  - name: Update apt cache and make sure vim,curl,unzip,nginx is installed
-    become: true
+  - name: Install vim, curl, unzip
     apt:
       name: "{{ item }}"
-      update_cache: yes
+      state: present
     loop:
       - vim
       - curl
       - unzip
-      - nginx
 
-  - name: Only on Ubuntu || Centos
+  # ------ For CentOS is dnf instead apt ------
+  - name: Install nginx
+    apt:
+      name: nginx
+      state: latest
+    notify: 
+        - "Restart the nginx server"
+
+  - name: Print message only on Ubuntu || Centos
     debug: 
       msg: Message only on Ubuntu or Centos
-    when: ansible_distribution == "Ubuntu" or ansible_distribution == "CentOS"
+    # when: ansible_distribution == "Ubuntu" or ansible_distribution == "CentOS"
+    # when: ansible_distribution == "Ubuntu" and andisble_distribution_version == "8.2"
+    when: ansible_distribution in ["Ubuntu", "CentOS"]
+
+
+
+  # ------------------------- Handlers -------------------------
+  # sudo apt-get remove --purge nginx*
+  handlers:
+    - name: Restart the nginx server
+      become: true
+      service: name=nginx state=restarted 
