@@ -1,0 +1,19 @@
+- name: Install nginx and php for Ubuntu
+  tags: nginx, ubuntu
+  apt:
+    name: nginx
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install php and modules
+  tags: php,ubuntu
+  apt:  
+    name: 
+      - php-fpm
+      - php-mysql
+      - php-curl
+      - php-gd
+      - php-mbstring
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
