@@ -18,6 +18,7 @@
     when: ansible_distribution == "Ubuntu"
 
   - name: Install vim, curl, unzip
+    # update_cache: yes
     apt:
       name: "{{ item }}"
       state: present
@@ -26,7 +27,6 @@
       - curl
       - unzip
 
-  # ------ For CentOS is dnf instead apt ------
   - name: Install nginx
     apt:
       name: nginx
@@ -42,9 +42,7 @@
     when: ansible_distribution in ["Ubuntu", "CentOS"]
 
 
-
   # ------------------------- Handlers -------------------------
-  # sudo apt-get remove --purge nginx*
   handlers:
     - name: Restart the nginx server
       become: true

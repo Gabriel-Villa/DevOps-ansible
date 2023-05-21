@@ -1,5 +1,8 @@
-[azure]
+[webservers]
 20.219.25.237
+
+[dbservers]
+20.197.62.255
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
