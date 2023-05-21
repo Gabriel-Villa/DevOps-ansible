@@ -3,3 +3,4 @@
 [Formación DevOps: Primeros pasos para la automatización con Ansible](https://www.youtube.com/watch?v=YljFi4WLpGk)
 
 <!-- sudo apt-get remove --purge nginx* -->
+<!-- vim targets.yml +20 -->

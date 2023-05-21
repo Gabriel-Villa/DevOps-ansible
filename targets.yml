@@ -21,46 +21,80 @@
   become: true
   tasks:
 
-  - name: Install nginx and php for Ubuntu
-    tags: nginx, ubuntu
-    apt:
+  # - name: Install nginx and php for Ubuntu
+  #   tags: nginx, ubuntu
+  #   apt:
+  #     name: nginx
+  #     state: latest
+  #   when: ansible_distribution == "Ubuntu"
+  #   notify: "Restart the nginx server"
+
+  # - name: Install php and modules
+  #   tags: php,ubuntu
+  #   apt:  
+  #     name: 
+  #       - php-fpm
+  #       - php-mysql
+  #       - php-curl
+  #       - php-gd
+  #       - php-mbstring
+  #     state: present
+  #   when: ansible_distribution == "Ubuntu"
+
+  # - name: Copy default html file for site
+  #   copy:
+  #     src: default.html
+  #     dest: /var/www/html/index.html
+  #     owner: root
+  #     group: root
+  #     mode: 0644
+
+  - name: Modify content of testing.txt file
+    lineinfile:
+      path: /var/www/html/testing.txt
+      regexp: '^ServerAdminEmail'
+      line: 'ServerAdminEmail: gabriel@gmail.com' 
+    when: ansible_distribution in ["Ubuntu"]
+    register: testingFileContent
+
+  - name: Restart nginx 
+    service:
       name: nginx
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-    notify: "Restart the nginx server"
-
-  - name: Install php and modules
-    tags: php,ubuntu
-    apt:  
-      name: 
-        - php-fpm
-        - php-mysql
-        - php-curl
-        - php-gd
-        - php-mbstring
-      state: present
-    when: ansible_distribution == "Ubuntu"
-
-  - name: Copy default html file for site
-    copy:
-      src: default.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+      state: restarted
+    when: testingFileContent.changed
 
   handlers:
     - name: Restart the nginx server
       become: true
       service: name=nginx state=restarted 
 
+# --------------------------------------
 
-- hosts: dbservers
-  become: true
-  tasks:
-  - name: Install mariadb
-    tags: mariadb, ubuntu
-    apt:
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu" 
+# - hosts: workstations
+#   become: true
+#   tasks:
+    
+#     - name: Install unzip
+#       package:
+#         name: unzip
+    
+#     - name: Install terraform
+#       unarchive:
+#         src: https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip
+#         dest: /usr/local/bin
+#         remote_src: yes
+#         owner: root
+#         group: root
+#         mode: 0644
+
+# # --------------------------------------
+
+# - hosts: dbservers
+#   become: true
+#   tasks:
+#   - name: Install mariadb
+#     tags: mariadb, ubuntu
+#     apt:
+#       name: mariadb-server
+#       state: latest
+#     when: ansible_distribution == "Ubuntu" 
