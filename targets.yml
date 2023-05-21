@@ -4,11 +4,13 @@
   pre_tasks:
 
   - name: Install updates CentOS
+    tags: always
     yum:
       update_cache: yes
     when: ansible_distribution == "CentOS"
 
   - name: Install updates Ubuntu
+    tags: always
     apt:
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
@@ -20,6 +22,7 @@
   tasks:
 
   - name: Install nginx and php for Ubuntu
+    tags: nginx, ubuntu
     apt:
       name: nginx
       state: latest
@@ -27,6 +30,7 @@
     notify: "Restart the nginx server"
 
   - name: Install php and modules
+    tags: php,ubuntu
     apt:  
       name: 
         - php-fpm
@@ -48,6 +52,7 @@
   become: true
   tasks:
   - name: Install mariadb
+    tags: mariadb, ubuntu
     apt:
       name: mariadb-server
       state: latest
