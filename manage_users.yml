@@ -1,0 +1,46 @@
+- hosts: all
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+
+    - name: Install updates CentOS
+      tags: always
+      yum:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "CentOS"
+
+    - name: Install updates Ubuntu
+      tags: always
+      apt:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "Ubuntu"
+
+  tasks:
+
+    - name: Create gabriel user
+      tags: always
+      user:
+        name: gabriel
+        groups: root
+
+    - name: Add ssh key for gabriel
+      authorized_key:
+        user: gabriel
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDEKbIFDdxxNyNouo5wek7lH/jU2i0PTRnZOfMyS/DhOXRJPLfhNprlTbw5q4LOf9HfoyRKFZ57AoqSLkUxceqZKoEoBwH+bItjS8WKsY13t8Y2IO6euNt6qiZsVoyfXwPzSYeg9fUEErcbyco3RWh5RJhMRGvyqa6P0sJgKc39R1QdKYpWrc55/puL5mFo2l2DVP9ovUojEo/iZ5ibWOAGWh3s9R4N60WYOIGfDI4yJNEr5WXZHweyGI3VOqFUPDBjOkztee1O3zziTQXppv6ALAZieV9/H0RLUIyo0dcO5KjOJYDVrESKXx3c3hXmDFvZ9+5jNQq4FfdhkpRSO3IeQjGg2xxWEZYn4cCKs1W8wldEOQq4DY7XXkqqVD4dE+3btoerDcWVqjnI519KphMGPQpEc/knc1t/XYpTAUIElV/CFMtg3zkwDq4Xu/LZz0h77PHHZ4VTuJ0cBTaUGqSuz+9RU76/+kEqqiSSYedbricHUaBV4e6e1doALrMjDiOpJfjZ2RkK2jKsCykWwu9xnl59aPh6F01QLn8Z885iTwO47YDhfF/vpK8zJg0Ry48n2MrMfqrFm1HqFCaOh2b36GuoVmIZt+y6neh6L+tsG3JOyFiKY/0USwmuo1048+XvnM/yXoZ0RQsPw+F7MhixMVh9lVVDmvuzzTgoexQ0DQ== VillaCapurroGabriel@gmail.com
+
+    - name: Add sudoers file for gabriel
+      tags: always
+      copy:
+        src: files/sudoer_gabriel
+        dest: /etc/sudoers.d/gabriel
+        owner: root
+        group: root
+        mode: 0440
+
+
+# ------------- To the test run ------------- 
+# ssh gabriel@20.219.25.237
+# cat .ssh/authorized_keys
